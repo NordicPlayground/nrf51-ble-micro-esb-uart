@@ -273,12 +273,27 @@ uint32_t uesb_init(uesb_config_t *parameters)
     return UESB_SUCCESS;
 }
 
+uint32_t uesb_force_idle(void)
+{
+    NRF_RADIO->INTENCLR      = 0xFFFFFFFF;
+    NRF_RADIO->TASKS_DISABLE = 1;
+    
+    m_uesb_mainstate = UESB_STATE_IDLE;
+    
+    return UESB_SUCCESS;
+}
+
 uint32_t uesb_disable(void)
 {
     if(m_uesb_mainstate != UESB_STATE_IDLE) return UESB_ERROR_NOT_IDLE;
     NRF_PPI->CHENCLR = (1 << UESB_PPI_TIMER_START) | (1 << UESB_PPI_TIMER_STOP) | (1 << UESB_PPI_RX_TIMEOUT) | (1 << UESB_PPI_TX_START);
     m_uesb_mainstate = UESB_STATE_UNINITIALIZED;
     return UESB_SUCCESS;
+}
+
+bool uesb_is_idle(void)
+{
+    return (m_uesb_mainstate == UESB_STATE_IDLE);
 }
 
 static void start_tx_transaction()

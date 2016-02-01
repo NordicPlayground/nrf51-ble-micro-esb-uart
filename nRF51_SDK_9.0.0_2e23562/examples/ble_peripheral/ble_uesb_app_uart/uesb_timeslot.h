@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "fifo.h"
 #include "micro_esb.h"
 
 #define UESB_TIMESLOT_MAX_PKT_LEN UESB_CORE_MAX_PAYLOAD_LENGTH
@@ -12,6 +11,13 @@
 // Max retries should be a function of packet length, ack delay, and timeslot size
 // A conservative estimate for 100 byte packets would be 1 ms per pkt+ack
 #define UESB_NUM_RETRIES          3
+
+/**@brief Communication identifiers */
+typedef struct
+{
+    uint8_t  rf_chn;     /* Packet-level RF channel. Must be the same for both transmitter and receiver */
+    uint8_t  rf_addr[5]; /* Packet-level RF address. Must be the same for both transmitter and receiver */
+} ut_access_data_t;
 
 /**@brief Data handler type. */
 typedef void (*ut_data_handler_t)(void * p_data, uint16_t length);
@@ -26,6 +32,9 @@ typedef void (*ut_data_handler_t)(void * p_data, uint16_t length);
  */
 uint32_t ut_init(ut_data_handler_t evt_handler);
 
+uint32_t ut_access_data_get(ut_access_data_t * p_access_data);
+uint32_t ut_access_data_set(ut_access_data_t * p_access_data);
+
 /**@brief SoftDevice system event handler. Must be called when a system event occurs */
 void ut_on_sys_evt(uint32_t sys_evt);
 
@@ -37,7 +46,7 @@ void ut_on_sys_evt(uint32_t sys_evt);
  * @retval NRF_SUCCESS
  * @retval NRF_ERROR_INVALID_STATE
  */
-uint32_t ut_start(uint32_t rf_channel, uint8_t rf_address[5]);
+uint32_t ut_start(void);
 
 /**@brief Send string via micro-ESB
  *
