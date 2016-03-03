@@ -16,8 +16,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "nrf.h"
-#include "nrf51.h"
-#include "nrf51_bitfields.h"
 
 #define DEBUGPIN1   12
 #define DEBUGPIN2   13
@@ -207,6 +205,8 @@ uint32_t uesb_init(uesb_config_t *parameters);
 uint32_t uesb_disable(void);
 
 bool     uesb_is_idle(void);
+
+uint32_t uesb_force_idle(void);
 
 uint32_t uesb_write_tx_payload(uesb_payload_t *payload);
 

@@ -397,13 +397,20 @@ static void power_manage(void)
 
 static void wireless_uesb_uart_init(void)
 {
-    uint32_t      err_code;
-    uint8_t       pipe_addr[5] = UESB_PIPE_ADDR;
+    uint32_t         err_code;
+    uint8_t          pipe_addr[5] = UESB_PIPE_ADDR;
+    ut_access_data_t access_data;
     
     err_code = ut_init(ut_data_handler);
     APP_ERROR_CHECK(err_code);
     
-    err_code = ut_start(UESB_RF_CHANNEL, pipe_addr);
+    access_data.rf_chn = UESB_RF_CHANNEL;
+    memcpy(access_data.rf_addr, &pipe_addr[0], 5);
+    
+    err_code = ut_access_data_set(&access_data);
+    APP_ERROR_CHECK(err_code);
+    
+    err_code = ut_start();
     APP_ERROR_CHECK(err_code);
 }
 
