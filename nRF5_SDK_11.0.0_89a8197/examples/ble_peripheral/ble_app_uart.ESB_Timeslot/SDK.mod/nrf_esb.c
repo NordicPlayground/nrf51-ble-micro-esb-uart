@@ -47,6 +47,7 @@ typedef enum {
     NRF_ESB_STATE_PTX_RX_ACK,                               /**< Module transmitting with ack and reception of payload with the ack response. */
     NRF_ESB_STATE_PRX,                                      /**< Module receiving packets without ack. */
     NRF_ESB_STATE_PRX_SEND_ACK,                             /**< Module transmitting ack in RX mode. */
+    NRF_ESB_STATE_DISABLE,                                  /**< Module disable in progress. */
 } nrf_esb_mainstate_t;
 
 
@@ -534,7 +535,8 @@ void RADIO_IRQHandler()
         DEBUG_PIN_SET(DEBUGPIN3);
 
         // Call the correct on_radio_disable function, depending on the current protocol state
-        if (on_radio_disabled)
+        // Make sure nrf_esb_disable() is NOT interrupted.
+        if (on_radio_disabled && m_nrf_esb_mainstate != NRF_ESB_STATE_DISABLE)
         {
             on_radio_disabled();
         }
@@ -868,6 +870,14 @@ uint32_t nrf_esb_suspend(void)
 
 uint32_t nrf_esb_disable(void)
 {
+    m_nrf_esb_mainstate = NRF_ESB_STATE_DISABLE;
+
+    /* Disable RADIO first. */
+    NRF_RADIO->INTENCLR        = 0xFFFFFFFF;
+    NRF_RADIO->EVENTS_DISABLED = 0;
+    NRF_RADIO->TASKS_DISABLE   = 1;
+    while (NRF_RADIO->EVENTS_DISABLED == 0) ;
+    
     // Clear PPI
     NRF_PPI->CHENCLR = (1 << NRF_ESB_PPI_TIMER_START) |
                        (1 << NRF_ESB_PPI_TIMER_STOP)  |
