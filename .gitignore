@@ -1,0 +1,64 @@
+# JLink configure
+JLinkLog.txt
+JLinkSettings.ini
+do-not-git/
+*.wsdt
+*.wspos
+*.ewt
+*.crun
+*.jlink
+*.dbgdt
+*.dni
+*.xcl
+*.cspy.bat
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+
+# Python
+*.pyc
+
+# GIT log
+git.log
+
+# Keil
+*.uvgui.*
+*.uvguix.*
+
+# Nordic
+_build/
+si_proj/
+# RTE/
+
+# Winmerge
+*.bak
