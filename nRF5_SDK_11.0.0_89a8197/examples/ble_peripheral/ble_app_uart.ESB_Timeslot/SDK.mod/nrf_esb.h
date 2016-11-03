@@ -71,11 +71,11 @@ STATIC_ASSERT(NRF_ESB_MAX_PAYLOAD_LENGTH <= 252);
 #define     NRF_ESB_CRC_RESET_VALUE             0xFFFF              /**< CRC reset value*/
 
 #ifdef NRF51
-#define ESB_EVT_IRQ        SWI0_IRQn                                /**< ESB Event IRQ number when running on a nRF51 device. */
-#define ESB_EVT_IRQHandler SWI0_IRQHandler                          /**< The handler for ESB_EVT_IRQ when running on a nRF51 device. */
+#define ESB_EVT_IRQ        SWI3_IRQn                                /**< ESB Event IRQ number when running on a nRF51 device. */
+#define ESB_EVT_IRQHandler SWI3_IRQHandler                          /**< The handler for ESB_EVT_IRQ when running on a nRF51 device. */
 #elif defined (NRF52)
-#define ESB_EVT_IRQ        SWI0_EGU0_IRQn                           /**< ESB Event IRQ number when running on a nRF52 device. */
-#define ESB_EVT_IRQHandler SWI0_EGU0_IRQHandler                     /**< The handler for ESB_EVT_IRQ when running on a nRF52 device. */
+#define ESB_EVT_IRQ        SWI3_EGU3_IRQn                           /**< ESB Event IRQ number when running on a nRF52 device. */
+#define ESB_EVT_IRQHandler SWI3_EGU3_IRQHandler                     /**< The handler for ESB_EVT_IRQ when running on a nRF52 device. */
 #endif /* NRF51 */
 
 #define     NRF_ESB_SYS_TIMER                   NRF_TIMER2          /**< System timer used by nrf_esb */
