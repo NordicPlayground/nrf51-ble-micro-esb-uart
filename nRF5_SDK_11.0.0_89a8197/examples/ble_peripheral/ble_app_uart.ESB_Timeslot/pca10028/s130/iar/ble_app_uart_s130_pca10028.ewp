@@ -312,6 +312,8 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
+          <state>$PROJ_DIR$\..\..\..\custom</state>
+          <state>$PROJ_DIR$\..\..\..\SDK.mod</state>
           <state>$PROJ_DIR$\..\..\..\config\ble_app_uart_s130_pca10028</state>
           <state>$PROJ_DIR$\..\..\..\config</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\components\ble\ble_advertising</state>
@@ -599,6 +601,8 @@
         </option>
         <option>
           <name>AUserIncludes</name>
+          <state>$PROJ_DIR$\..\..\..\custom</state>
+          <state>$PROJ_DIR$\..\..\..\SDK.mod</state>
           <state>$PROJ_DIR$\..\..\..\config\ble_app_uart_s130_pca10028</state>
           <state>$PROJ_DIR$\..\..\..\config</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\components\ble\ble_advertising</state>
@@ -1098,6 +1102,18 @@
   <name>Application</name>
     <file>
     <name>$PROJ_DIR$\..\..\..\main.c</name>
+    </file>
+  </group>
+  <group>
+  <name>Custom</name>
+    <file>
+    <name>$PROJ_DIR$\..\..\..\custom\esb_timeslot.c</name>
+    </file>
+  </group>
+  <group>
+  <name>nRF_ESB</name>
+    <file>
+    <name>$PROJ_DIR$\..\..\..\SDK.mod\nrf_esb.c</name>
     </file>
   </group>
   <group>

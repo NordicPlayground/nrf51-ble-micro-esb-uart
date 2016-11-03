@@ -37,6 +37,7 @@
 #include "app_util_platform.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
+#include "esb_timeslot.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
 
@@ -247,7 +248,9 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
             APP_ERROR_CHECK(err_code);
             break;
         case BLE_ADV_EVT_IDLE:
-            sleep_mode_enter();
+            /* Re-start advertising. */
+            err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+            APP_ERROR_CHECK(err_code);
             break;
         default:
             break;
@@ -401,8 +404,12 @@ void uart_event_handle(app_uart_evt_t * p_event)
             UNUSED_VARIABLE(app_uart_get(&data_array[index]));
             index++;
 
-            if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN)))
+            if ((data_array[index - 1] == '\n') || (data_array[index - 1] == '\r') || (index >= (BLE_NUS_MAX_DATA_LEN)))
             {
+                /* Send UART input packet via ESB and BLE. */
+                err_code = esb_timeslot_send_str(data_array, index);
+                APP_ERROR_CHECK(err_code);
+
                 err_code = ble_nus_string_send(&m_nus, data_array, index);
                 if (err_code != NRF_ERROR_INVALID_STATE)
                 {
@@ -513,6 +520,27 @@ static void power_manage(void)
 }
 
 
+static void esb_timeslot_data_handler(void * p_data, uint16_t length)
+{
+    uint8_t str[255+1];
+
+    memcpy(str, p_data, length);
+    str[length] = '\0';
+    printf("ESB packet : %s",str);
+}
+
+
+static void esb_timeslot_start(void)
+{
+    uint32_t err_code;
+    
+    err_code = esb_timeslot_init(esb_timeslot_data_handler);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = esb_timeslot_sd_start();
+    APP_ERROR_CHECK(err_code);
+}
+
 /**@brief Application main function.
  */
 int main(void)
@@ -531,7 +559,10 @@ int main(void)
     advertising_init();
     conn_params_init();
 
+    esb_timeslot_start();
+
     printf("\r\nUART Start!\r\n");
+    printf("\r\nType something + Press Enter to send ESB text!\r\n");
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
     

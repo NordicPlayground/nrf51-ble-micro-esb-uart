@@ -66,12 +66,16 @@ $(abspath ../../../../../../components/ble/ble_services/ble_nus/ble_nus.c) \
 $(abspath ../../../../../../components/ble/common/ble_srv_common.c) \
 $(abspath ../../../../../../components/toolchain/system_nrf51.c) \
 $(abspath ../../../../../../components/softdevice/common/softdevice_handler/softdevice_handler.c) \
+$(abspath ../../../custom/esb_timeslot.c) \
+$(abspath ../../../SDK.mod/nrf_esb.c) \
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(abspath ../../../../../../components/toolchain/gcc/gcc_startup_nrf51.s)
 
 #includes common to all targets
-INC_PATHS  = -I$(abspath ../../../config/ble_app_uart_s130_pca10028)
+INC_PATHS  = -I$(abspath ../../../SDK.mod)
+INC_PATHS += -I$(abspath ../../../custom)
+INC_PATHS += -I$(abspath ../../../config/ble_app_uart_s130_pca10028)
 INC_PATHS += -I$(abspath ../../../config)
 INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/config)
 INC_PATHS += -I$(abspath ../../../../../../components/libraries/timer)
