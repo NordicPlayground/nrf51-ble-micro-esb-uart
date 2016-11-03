@@ -57,6 +57,11 @@ uint32_t esb_timeslot_init(ut_data_handler_t evt_handler);
 uint32_t esb_timeslot_sd_start(void);
 
 
+/**@brief Function for stopping the timeslot API.
+ */
+uint32_t esb_timeslot_sd_stop(void);
+
+
 /**@brief Send string via micro-ESB
  *
  * @note Function blocks until previous transmission has finished

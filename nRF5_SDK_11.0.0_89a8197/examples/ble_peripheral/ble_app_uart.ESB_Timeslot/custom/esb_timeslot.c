@@ -258,6 +258,13 @@ uint32_t esb_timeslot_sd_start(void)
 }
 
 
+
+uint32_t esb_timeslot_sd_stop(void)
+{
+    return sd_radio_session_close();
+}
+
+
 /**@brief IRQHandler used for execution context management. 
   *       Any available handler can be used as we're not using the associated hardware.
   *       This handler is used to stop and disable UESB.
