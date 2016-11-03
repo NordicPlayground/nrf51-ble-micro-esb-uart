@@ -71,6 +71,8 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
+static bool                             m_proprietary_on = false;                   /**< A flag which indicates whether 2.4GHz proprietary protocol is turned on or not. */
+
 
 /**@brief Function for assert macro callback.
  *
@@ -378,6 +380,21 @@ void bsp_event_handler(bsp_event_t event)
             }
             break;
 
+        case BSP_EVENT_KEY_1:
+            /* Toggle ESB on-off */
+            if (m_proprietary_on)
+            {
+                m_proprietary_on = false;
+                err_code = esb_timeslot_sd_stop();
+            }
+            else
+            {
+                m_proprietary_on = true;
+                err_code = esb_timeslot_sd_start();
+            }
+            APP_ERROR_CHECK(err_code);
+            break;
+
         default:
             break;
     }
@@ -406,9 +423,12 @@ void uart_event_handle(app_uart_evt_t * p_event)
 
             if ((data_array[index - 1] == '\n') || (data_array[index - 1] == '\r') || (index >= (BLE_NUS_MAX_DATA_LEN)))
             {
-                /* Send UART input packet via ESB and BLE. */
-                err_code = esb_timeslot_send_str(data_array, index);
-                APP_ERROR_CHECK(err_code);
+                // Send UART input packet via ESB and BLE
+                if (m_proprietary_on)
+                {
+                    err_code = esb_timeslot_send_str(data_array, index);
+                    APP_ERROR_CHECK(err_code);
+                }
 
                 err_code = ble_nus_string_send(&m_nus, data_array, index);
                 if (err_code != NRF_ERROR_INVALID_STATE)
@@ -539,6 +559,8 @@ static void esb_timeslot_start(void)
 
     err_code = esb_timeslot_sd_start();
     APP_ERROR_CHECK(err_code);
+
+    m_proprietary_on = true;
 }
 
 /**@brief Application main function.
