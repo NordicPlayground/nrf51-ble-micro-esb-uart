@@ -30,6 +30,19 @@
 #define TS_SAFETY_MARGIN_US         (700UL)                 /**< The timeslot activity should be finished with this much to spare. */
 #define TS_EXTEND_MARGIN_US         (2000UL)                /**< Margin reserved for extension processing. */
 
+/**@brief Debug pin configuration. */
+#define ESB_TIMESLOT_DEBUG_ENABLE   0
+#if ESB_TIMESLOT_DEBUG_ENABLE
+#define ESB_TIMESLOT_DBG_PIN_RADIO_TIMESLOT     2   /**< Pin which indicates radio time-slot being active. */
+#define ESB_TIMESLOT_DBG_PIN_RADIO_IRQHANDLER   3   /**< Pin which indicates the activity of RADIO_IRQHandler. */
+#define ESB_TIMESLOT_DBG_PIN_DISABLE            4   /**< Pin which indicates ESB radio being disabled. */
+
+#define ESB_TIMESLOT_DEBUG_PIN_SET(x)           nrf_gpio_pin_set(x)
+#define ESB_TIMESLOT_DEBUG_PIN_CLEAR(x)         nrf_gpio_pin_clear(x)
+#else
+#define ESB_TIMESLOT_DEBUG_PIN_SET(x)
+#define ESB_TIMESLOT_DEBUG_PIN_CLEAR(x)
+#endif
 
 static volatile enum
 {
@@ -160,8 +173,10 @@ nrf_radio_signal_callback_return_param_t * radio_callback(uint8_t signal_type)
 
         case NRF_RADIO_CALLBACK_SIGNAL_TYPE_RADIO:
             signal_callback_return_param.params.request.p_next = NULL;
-            signal_callback_return_param.callback_action       = NRF_RADIO_SIGNAL_CALLBACK_ACTION_NONE;
+            signal_callback_return_param.callback_action = NRF_RADIO_SIGNAL_CALLBACK_ACTION_NONE;
+            ESB_TIMESLOT_DEBUG_PIN_SET(ESB_TIMESLOT_DBG_PIN_RADIO_IRQHANDLER);
             RADIO_IRQHandler();
+            ESB_TIMESLOT_DEBUG_PIN_CLEAR(ESB_TIMESLOT_DBG_PIN_RADIO_IRQHANDLER);
             break;
 
         case NRF_RADIO_CALLBACK_SIGNAL_TYPE_TIMER0:
@@ -273,6 +288,8 @@ void TIMESLOT_END_IRQHandler(void)
 {
     uint32_t err_code;
 
+    ESB_TIMESLOT_DEBUG_PIN_SET(ESB_TIMESLOT_DBG_PIN_DISABLE);
+
     /* Timeslot is about to end: stop UESB. */
     if (m_state == STATE_RX)
     {  
@@ -290,6 +307,9 @@ void TIMESLOT_END_IRQHandler(void)
 
     m_total_timeslot_length = 0;
     m_state                 = STATE_IDLE;
+
+    ESB_TIMESLOT_DEBUG_PIN_CLEAR(ESB_TIMESLOT_DBG_PIN_DISABLE);
+    ESB_TIMESLOT_DEBUG_PIN_CLEAR(ESB_TIMESLOT_DBG_PIN_RADIO_TIMESLOT);
 }
 
 
@@ -302,6 +322,8 @@ void TIMESLOT_BEGIN_IRQHandler(void)
     uint32_t err_code;
     nrf_esb_payload_t tx_payload ;
     uint32_t          tx_payload_len;
+
+    ESB_TIMESLOT_DEBUG_PIN_SET(ESB_TIMESLOT_DBG_PIN_RADIO_TIMESLOT);
 
     if (m_state == STATE_IDLE)
     {
@@ -446,6 +468,11 @@ uint32_t esb_timeslot_init(ut_data_handler_t evt_handler)
     NVIC_SetPriority(UESB_RX_HANDLE_IRQn, 1);
     NVIC_EnableIRQ(UESB_RX_HANDLE_IRQn);
 
+#if ESB_TIMESLOT_DEBUG_ENABLE
+    nrf_gpio_cfg_output(ESB_TIMESLOT_DBG_PIN_RADIO_TIMESLOT);
+    nrf_gpio_cfg_output(ESB_TIMESLOT_DBG_PIN_RADIO_IRQHANDLER);
+    nrf_gpio_cfg_output(ESB_TIMESLOT_DBG_PIN_DISABLE);
+#endif
     return NRF_SUCCESS;
 }
 
