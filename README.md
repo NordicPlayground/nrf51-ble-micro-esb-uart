@@ -1,5 +1,5 @@
 # nrf51-ble-uesb-uart
-Concurrent BLE and micro-ESB wireless UART example
+Concurrent BLE and ESB wireless UART example
 
 Example code from https://devzone.nordicsemi.com/blogs/733/running-micro-esb-concurrently-with-ble/
 that illustrates how a wireless UART application can be run concurrently over micro-ESB and BLE.
