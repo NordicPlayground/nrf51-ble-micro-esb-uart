@@ -457,15 +457,15 @@ uint32_t esb_timeslot_init(ut_data_handler_t evt_handler)
     // These can be any available IRQ as we're not using any of the hardware,
     // simply triggering them through software
     NVIC_ClearPendingIRQ(TIMESLOT_END_IRQn);
-    NVIC_SetPriority(TIMESLOT_END_IRQn, 1);
+    NVIC_SetPriority(TIMESLOT_END_IRQn, TIMESLOT_END_IRQPriority);
     NVIC_EnableIRQ(TIMESLOT_END_IRQn);
 
     NVIC_ClearPendingIRQ(TIMESLOT_BEGIN_IRQn);
-    NVIC_SetPriority(TIMESLOT_BEGIN_IRQn, 1);
+    NVIC_SetPriority(TIMESLOT_BEGIN_IRQn, TIMESLOT_BEGIN_IRQPriority);
     NVIC_EnableIRQ(TIMESLOT_BEGIN_IRQn);
 
     NVIC_ClearPendingIRQ(UESB_RX_HANDLE_IRQn);
-    NVIC_SetPriority(UESB_RX_HANDLE_IRQn, 1);
+    NVIC_SetPriority(UESB_RX_HANDLE_IRQn, UESB_RX_HANDLE_IRQPriority);
     NVIC_EnableIRQ(UESB_RX_HANDLE_IRQn);
 
 #if ESB_TIMESLOT_DEBUG_ENABLE
