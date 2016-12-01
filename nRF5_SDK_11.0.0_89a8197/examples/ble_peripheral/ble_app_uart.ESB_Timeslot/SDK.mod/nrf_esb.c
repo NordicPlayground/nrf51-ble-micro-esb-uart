@@ -675,9 +675,10 @@ static void clear_events_restart_rx(void)
     update_rf_payload_format(m_config_local.payload_length);
     NRF_RADIO->PACKETPTR = (uint32_t)m_rx_payload_buffer;
     NRF_RADIO->EVENTS_DISABLED = 0;
-    NRF_RADIO->TASKS_DISABLE = 1;
-
-    while (NRF_RADIO->EVENTS_DISABLED == 0);
+    do
+    {
+        NRF_RADIO->TASKS_DISABLE = 1;
+    } while (NRF_RADIO->EVENTS_DISABLED == 0);
 
     NRF_RADIO->EVENTS_DISABLED = 0;
     NRF_RADIO->SHORTS = RADIO_SHORTS_COMMON | RADIO_SHORTS_DISABLED_TXEN_Msk;
@@ -1059,8 +1060,10 @@ uint32_t nrf_esb_stop_rx(void)
         NRF_RADIO->INTENCLR = 0xFFFFFFFF;
         on_radio_disabled = NULL;
         NRF_RADIO->EVENTS_DISABLED = 0;
-        NRF_RADIO->TASKS_DISABLE = 1;
-        while (NRF_RADIO->EVENTS_DISABLED == 0);
+        do
+        {
+            NRF_RADIO->TASKS_DISABLE = 1;
+        } while (NRF_RADIO->EVENTS_DISABLED == 0);
         m_nrf_esb_mainstate = NRF_ESB_STATE_IDLE;
 
         return NRF_SUCCESS;
