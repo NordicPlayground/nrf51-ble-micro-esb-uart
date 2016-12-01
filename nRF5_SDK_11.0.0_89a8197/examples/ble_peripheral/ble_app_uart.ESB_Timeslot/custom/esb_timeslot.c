@@ -22,7 +22,7 @@
 
 #define UESB_RX_HANDLE_IRQn         WDT_IRQn                /**< Re-used WDT interrupt for processing the RX data from UESB. */
 #define UESB_RX_HANDLE_IRQHandler   WDT_IRQHandler          /**< The IRQ handler of WDT interrupt */
-#define UESB_RX_HANDLE_IRQPriority  3                       /**< Interrupt priority of @ref UESB_RX_HANDLE_IRQn. */
+#define UESB_RX_HANDLE_IRQPriority  1                       /**< Interrupt priority of @ref UESB_RX_HANDLE_IRQn. */
 
 #define MAX_TX_ATTEMPTS             10                      /**< Maximum attempt before discarding the packet (the number of trial = MAX_TX_ATTEMPTS x retransmit_count, if timeslot is large enough) */
 #define TS_LEN_US                   (5000UL)                /**< Length of timeslot to be requested. */
