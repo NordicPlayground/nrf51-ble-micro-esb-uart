@@ -5,7 +5,7 @@ Example code from https://devzone.nordicsemi.com/blogs/733/running-micro-esb-con
 that illustrates how a wireless UART application can be run concurrently over ESB and BLE.
 
 # Requirements
-- nRF5 SDK version 11.0.2,
+- nRF5 SDK version 17.0.2,
 - S132 SoftDevice 7.2.0
 - 2 x nRF52-DK 
 
