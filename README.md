@@ -13,4 +13,4 @@ Tested with compilers: Segger Embedded Studio.
 Tested with nRF52-DK.
 
 # How to compile the code
-Copy/link the examples\ble_peripheral\ble_app_uart.ESB and examples\ble_peripheral\common folders into the ble_peripheral example folder of your local SDK.
+Copy/link the examples\ble_peripheral\ble_app_uart.ESB folder into the ble_peripheral example folder of your local SDK.
